@@ -130,6 +130,29 @@ your management.  Returns a data structure that looks like this:
     };
 
 =cut
+sub getdomains {
+    my $self = shift;
+
+    my $params = _argparse(@_);
+
+    my %request = (
+        Command => 'namecheap.domains.getList',
+        ClientIp => $params->{'ClientIp'},
+        UserName => $params->{'UserName'},
+    );
+
+    foreach my $p (('ListType','SearchTerm','Page','PageSize','SortBy')) {
+	if (defined($params->{$p})) {
+		$request{$p} = $params->{$p};
+	}
+    }
+
+    my $xml = $self->api->request(%request);
+
+    return unless $xml;
+
+    return $xml->{CommandResponse}->{DomainGetListResult};
+}
 
 sub getnameservers {
     my $self = shift;

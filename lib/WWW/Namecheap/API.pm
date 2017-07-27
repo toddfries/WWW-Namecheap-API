@@ -11,6 +11,7 @@ use XML::Simple;
 # For convenience methods
 use WWW::Namecheap::Domain ();
 use WWW::Namecheap::DNS ();
+use WWW::Namecheap::NS ();
 
 =head1 NAME
 
@@ -231,6 +232,16 @@ sub dns {
     }
 
     return $self->{_dns} = WWW::Namecheap::DNS->new(API => $self);
+}
+
+sub ns {
+    my $self = shift;
+
+    if ($self->{_ns}) {
+        return $self->{_ns};
+    }
+
+    return $self->{_ns} = WWW::Namecheap::NS->new(API => $self);
 }
 
 =head2 $api->user()

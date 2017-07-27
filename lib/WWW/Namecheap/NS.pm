@@ -71,12 +71,13 @@ sub getInfo {
 
     my $params = _argparse(@_);
 
-    return unless $params->{Nameserver};
+    return unless $params->{'Nameserver'};
 
     my %request = (
         Command => 'namecheap.domains.ns.getInfo',
         ClientIp => $params->{'ClientIp'},
         UserName => $params->{'UserName'},
+	Nameserver => $params->{'Nameserver'},
     );
 
     my ($sld, $tld) = split(/[.]/, $params->{Nameserver}, 2);
@@ -87,7 +88,8 @@ sub getInfo {
 
     return unless $xml;
 
-    return $xml->{CommandResponse}->{DomainNSGetListResult};
+    return $xml;
+    #return $xml->{CommandResponse}; # ->{DomainNSGetListResult};
 }
 
 =head1 AUTHOR
