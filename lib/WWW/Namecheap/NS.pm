@@ -66,6 +66,30 @@ sub _argparse {
     return $hashref;
 }
 
+sub getInfo {
+    my $self = shift;
+
+    my $params = _argparse(@_);
+
+    return unless $params->{Nameserver};
+
+    my %request = (
+        Command => 'namecheap.domains.ns.getInfo',
+        ClientIp => $params->{'ClientIp'},
+        UserName => $params->{'UserName'},
+    );
+
+    my ($sld, $tld) = split(/[.]/, $params->{Nameserver}, 2);
+    $request{SLD} = $sld;
+    $request{TLD} = $tld;
+
+    my $xml = $self->api->request(%request);
+
+    return unless $xml;
+
+    return $xml->{CommandResponse}->{DomainNSGetListResult};
+}
+
 =head1 AUTHOR
 
 Tim Wilde, C<< <twilde at cpan.org> >>
