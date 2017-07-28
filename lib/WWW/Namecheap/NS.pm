@@ -80,7 +80,7 @@ sub getInfo {
 	Nameserver => $params->{'Nameserver'},
     );
 
-    my ($sld, $tld) = split(/[.]/, $params->{Nameserver}, 2);
+    my ($name, $sld, $tld) = split(/[.]/, $params->{Nameserver}, 3);
     $request{SLD} = $sld;
     $request{TLD} = $tld;
 
@@ -88,8 +88,7 @@ sub getInfo {
 
     return unless $xml;
 
-    return $xml;
-    #return $xml->{CommandResponse}; # ->{DomainNSGetListResult};
+    return $xml->{CommandResponse}->{DomainNSInfoResult};
 }
 
 =head1 AUTHOR
