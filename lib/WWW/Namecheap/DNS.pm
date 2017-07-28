@@ -98,6 +98,7 @@ sub setnameservers {
     } else {
         $request{Command} = 'namecheap.domains.dns.setCustom';
         $request{Nameservers} = join(',', @{$params->{Nameservers}});
+	#printf STDERR "\nNameservers: %s\n", $request{Nameservers};
     }
 
     my ($sld, $tld) = split(/[.]/, $params->{DomainName}, 2);
