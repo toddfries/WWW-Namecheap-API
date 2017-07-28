@@ -154,6 +154,24 @@ sub getdomains {
     return $xml->{CommandResponse}->{DomainGetListResult};
 }
 
+sub getTldList {
+    my $self = shift;
+
+    my $params = _argparse(@_);
+
+    my %request = (
+        Command => 'namecheap.domains.gettldlist',
+        ClientIp => $params->{'ClientIp'},
+        UserName => $params->{'UserName'},
+    );
+
+    my $xml = $self->api->request(%request);
+
+    return unless $xml;
+
+    return $xml->{CommandResponse}->{DomainGetTldListResult};
+}
+
 sub getnameservers {
     my $self = shift;
 
