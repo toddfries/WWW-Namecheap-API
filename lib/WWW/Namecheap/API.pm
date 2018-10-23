@@ -12,6 +12,7 @@ use XML::Simple;
 use WWW::Namecheap::Domain ();
 use WWW::Namecheap::DNS ();
 use WWW::Namecheap::NS ();
+use WWW::Namecheap::WhoisGuard ();
 
 =head1 NAME
 
@@ -242,6 +243,16 @@ sub ns {
     }
 
     return $self->{_ns} = WWW::Namecheap::NS->new(API => $self);
+}
+
+sub wg {
+    my $self = shift;
+
+    if ($self->{_wg}) {
+        return $self->{_wg};
+    }
+
+    return $self->{_wg} = WWW::Namecheap::WhoisGuard->new(API => $self);
 }
 
 =head2 $api->user()
