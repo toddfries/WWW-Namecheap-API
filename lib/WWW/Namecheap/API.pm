@@ -13,6 +13,7 @@ use WWW::Namecheap::Domain ();
 use WWW::Namecheap::DNS ();
 use WWW::Namecheap::NS ();
 use WWW::Namecheap::WhoisGuard ();
+use WWW::Namecheap::Pricing ();
 
 =head1 NAME
 
@@ -248,11 +249,21 @@ sub ns {
 sub wg {
     my $self = shift;
 
-    if ($self->{_wg}) {
+    if (defined($self->{_wg})) {
         return $self->{_wg};
     }
 
     return $self->{_wg} = WWW::Namecheap::WhoisGuard->new(API => $self);
+}
+
+sub pricing {
+    my $self = shift;
+
+    if (defined($self->{_pricing})) {
+	return $self->{_pricing};
+    }
+
+    return $self->{_pricing} = WWW::Namecheap::Pricing->new(API => $self);
 }
 
 =head2 $api->user()
