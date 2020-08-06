@@ -4,6 +4,7 @@ use 5.006;
 use strict;
 use warnings;
 use Carp();
+use Data::Dumper;
 
 =head1 NAME
 
@@ -55,21 +56,21 @@ sub new {
 Set the nameservers used by a domain under your management.  They may
 be set to custom nameservers or the Namecheap default nameservers.
 
-    my $result = $dns->setnameservers(
+    my $result = $dns->setnameservers({
         DomainName => 'example.com',
         Nameservers => [
             'ns1.example.com',
             'ns2.example.com',
         ],
         DefaultNS => 0,
-    );
+    });
 
 or, for the Namecheap default:
 
-    my $result = $dns->setnameservers(
+    my $result = $dns->setnameservers({
         DomainName => 'example.com',
         DefaultNS => 1,
-    );
+    });
 
 $result is a small hashref confirming back the domain that was modified
 and whether the operation was successful or not:
@@ -84,9 +85,16 @@ and whether the operation was successful or not:
 sub setnameservers {
     my $self = shift;
 
+
     my $params = _argparse(@_);
 
+    print "\n::setnameservers\n";
+    print "params: ".Dumper($params);
+    print "\@_: ".Dumper(args => @_);
+
     return unless $params->{DomainName};
+
+    printf "\n::setnameservers dom = %s\n", $params->{DomainName};
 
     my %request = (
         ClientIp => $params->{'ClientIp'},
@@ -98,7 +106,7 @@ sub setnameservers {
     } else {
         $request{Command} = 'namecheap.domains.dns.setCustom';
         $request{Nameservers} = join(',', @{$params->{Nameservers}});
-	#printf STDERR "\nNameservers: %s\n", $request{Nameservers};
+	printf "\n::setnameservers - Nameservers: %s\n", $request{Nameservers};
     }
 
     my ($sld, $tld) = split(/[.]/, $params->{DomainName}, 2);
@@ -108,6 +116,9 @@ sub setnameservers {
     my $xml = $self->api->request(%request);
 
     return unless $xml;
+
+    print "\n::setnameservers - request xml:\n";
+    print Dumper($xml);
 
     if ($params->{DefaultNS}) {
         return $xml->{CommandResponse}->{DomainDNSSetDefaultResult};
