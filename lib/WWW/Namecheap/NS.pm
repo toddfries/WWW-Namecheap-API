@@ -4,6 +4,7 @@ use 5.006;
 use strict;
 use warnings;
 use Carp();
+use Data::Dumper;
 
 =head1 NAME
 
@@ -66,6 +67,20 @@ sub _argparse {
     return $hashref;
 }
 
+=head2 $ns->getInfo()
+
+Gets info about a nameserver.
+
+$ns->getInfo({
+	Nameserver => 'ns1.example.com'
+});
+
+returns undef on failure
+
+returns a data structure on success
+
+=cut
+
 sub getInfo {
     my $self = shift;
 
@@ -78,6 +93,54 @@ sub getInfo {
         ClientIp => $params->{'ClientIp'},
         UserName => $params->{'UserName'},
 	Nameserver => $params->{'Nameserver'},
+    );
+
+    my ($name, $sld, $tld) = split(/[.]/, $params->{Nameserver}, 3);
+    $request{SLD} = $sld;
+    $request{TLD} = $tld;
+
+    print "::ns.getInfo params:\n";
+    print Dumper(%request);
+
+    my $xml = $self->api->request(%request);
+
+    return unless $xml;
+
+    return $xml->{CommandResponse}->{DomainNSInfoResult};
+}
+
+=head2 $ns->update()
+
+Gets info about a nameserver.
+
+$ns->update({
+	Nameserver => 'ns1.example.com',
+	OldIP => '1.2.3.4',
+	IP => '1.2.3.5',
+});
+
+returns undef on failure
+
+returns a data structure on success
+
+=cut
+
+sub update {
+    my $self = shift;
+
+    my $params = _argparse(@_);
+
+    return unless $params->{'Nameserver'};
+    return unless $params->{'OldiP'};
+    return unless $params->{'IP'};
+
+    my %request = (
+        Command => 'namecheap.domains.ns.getInfo',
+        ClientIp => $params->{'ClientIp'},
+        UserName => $params->{'UserName'},
+	Nameserver => $params->{'Nameserver'},
+	OldIP => $params->{'OldIP'},
+	IP => $params->{'IP'},
     );
 
     my ($name, $sld, $tld) = split(/[.]/, $params->{Nameserver}, 3);
