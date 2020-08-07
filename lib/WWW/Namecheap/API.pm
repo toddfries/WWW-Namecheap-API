@@ -183,7 +183,7 @@ sub request {
         $self->{'ApiUrl'}, $self->{'ApiUser'}, $self->{'ApiKey'},
         $username, delete($reqparams{'Command'}), $clientip);
     $url .= join('&', map { join('=', map { uri_escape($_) } each %reqparams) } keys %reqparams);
-    #print STDERR "\n\nSent URL $url\n\n";
+    #print STDERR "\n\nSending URL $url\n\n";
     my $response = $ua->get($url);
 
     unless ($response->is_success) {
