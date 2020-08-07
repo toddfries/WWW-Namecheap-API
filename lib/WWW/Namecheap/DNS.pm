@@ -88,13 +88,13 @@ sub setnameservers {
 
     my $params = _argparse(@_);
 
-    print "\n::setnameservers\n";
-    print "params: ".Dumper($params);
-    print "\@_: ".Dumper(args => @_);
+    #print "\n::setnameservers\n";
+    #print "params: ".Dumper($params);
+    #print "\@_: ".Dumper(args => @_);
 
     return unless $params->{DomainName};
 
-    printf "\n::setnameservers dom = %s\n", $params->{DomainName};
+    #printf "\n::setnameservers dom = %s\n", $params->{DomainName};
 
     my %request = (
         ClientIp => $params->{'ClientIp'},
@@ -106,7 +106,7 @@ sub setnameservers {
     } else {
         $request{Command} = 'namecheap.domains.dns.setCustom';
         $request{Nameservers} = join(',', @{$params->{Nameservers}});
-	printf "\n::setnameservers - Nameservers: %s\n", $request{Nameservers};
+	#printf "\n::setnameservers - Nameservers: %s\n", $request{Nameservers};
     }
 
     my ($sld, $tld) = split(/[.]/, $params->{DomainName}, 2);
@@ -117,8 +117,8 @@ sub setnameservers {
 
     return unless $xml;
 
-    print "\n::setnameservers - request xml:\n";
-    print Dumper($xml);
+    #print "\n::setnameservers - request xml:\n";
+    #print Dumper($xml);
 
     if ($params->{DefaultNS}) {
         return $xml->{CommandResponse}->{DomainDNSSetDefaultResult};
